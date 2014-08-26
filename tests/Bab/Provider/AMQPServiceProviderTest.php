@@ -8,6 +8,15 @@ use Prophecy\PhpUnit\ProphecyTestCase;
 
 class AMQPServiceProviderTest extends ProphecyTestCase
 {
+    protected function setUp()
+    {
+        if (!class_exists('AMQPConnection')) {
+            $this->markTestSkipped('The AMQP extension is not available');
+        }
+
+        parent::setUp();
+    }
+
     public function test_it_is_initializable()
     {
         $serviceProvider = new AMQPServiceProvider();
