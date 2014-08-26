@@ -5,19 +5,19 @@
 ## Installation
 
 The recommended way to install this bundle is through
-[Composer](http://getcomposer.org/). Require the `swarrot/swarrot-bundle`
-package into your `composer.json` file:
+[Composer](http://getcomposer.org/). Require the
+`odolbeau/amqp-service-provider` package into your `composer.json` file:
 
 ```json
 {
     "require": {
-        "swarrot/swarrot-bundle": "@stable"
+        "odolbeau/amqp-service-provider": "@stable"
     }
 }
 ```
 
 **Protip:** you should browse the
-[`swarrot/swarrot-bundle`](https://packagist.org/packages/swarrot/swarrot-bundle)
+[`odolbeau/amqp-service-provider`](https://packagist.org/packages/odolbeau/amqp-service-provider)
 page to choose a stable version to use, avoid the `@stable` meta constraint.
 
 ## Usage
@@ -60,7 +60,7 @@ You can now retrieve queues and / or exchanges like this :
 
 ```php
 // To get a queue
-$container['queue.factory']('queueName', 'connectionName');
+$container['queue.factory']('queueName', 'conn1');
 // To get an exchange
-$container['exchange.factory']('queueName', 'connectionName');
+$container['exchange.factory']('queueName', 'conn2');
 ```
