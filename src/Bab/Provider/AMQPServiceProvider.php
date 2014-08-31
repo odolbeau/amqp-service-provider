@@ -12,12 +12,28 @@ class AMQPServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $c)
     {
-        $c['queue.factory'] = function ($c) {
+        $c['amqp.connections.initializer'] = function ($c) {
             $config = $c['amqp.options'];
+
             $connections = array();
-            foreach ($config['connections'] as $name => $options) {
-                $connections[$name] = new \AMQPConnection($options);
+            if (isset($config['connections'])) {
+                foreach ($config['connections'] as $name => $options) {
+                    $connections[$name] = new \AMQPConnection($options);
+                }
+
+                return $connections;
             }
+
+            if (isset($config['connection'])) {
+                return array('default' => new \AMQPConnection($config['connection']));
+            }
+
+            throw new \LogicException('No connection defined');
+
+        };
+
+        $c['queue.factory'] = function ($c) {
+            $connections = $c['amqp.connections.initializer'];
 
             return function ($queueName, $connectionName = null) use ($connections) {
                 $names = array_keys($connections);
@@ -47,11 +63,7 @@ class AMQPServiceProvider implements ServiceProviderInterface
         };
 
         $c['exchange.factory'] = function ($c) {
-            $config = $c['amqp.options'];
-            $connections = array();
-            foreach ($config['connections'] as $name => $options) {
-                $connections[$name] = new \AMQPConnection($options);
-            }
+            $connections = $c['amqp.connections.initializer'];
 
             return function ($exchangeName, $connectionName = null) use ($connections) {
                 $names = array_keys($connections);
